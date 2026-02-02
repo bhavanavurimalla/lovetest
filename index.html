@@ -2,71 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Just for You ❤️</title>
+  <title>Love Test ❤️</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fff0f5;
-      text-align: center;
+      background: linear-gradient(135deg, #6a5acd, #836fff);
       padding: 30px;
+      color: #333;
     }
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 420px;
       margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    .score {
+      text-align: center;
+      font-weight: bold;
+      color: #6a5acd;
+      margin-bottom: 10px;
+    }
+    h3 {
+      text-align: center;
+    }
+    .option {
+      border: 2px solid #c7c7ff;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .option:hover {
+      background: #f0f0ff;
+    }
+    .option.selected {
+      background: #6a5acd;
+      color: white;
     }
     button {
+      width: 100%;
+      padding: 12px;
       background: #ff4d6d;
-      color: white;
       border: none;
-      padding: 10px 20px;
       border-radius: 20px;
-      cursor: pointer;
+      color: white;
       font-size: 16px;
-    }
-    button:hover {
-      background: #e63950;
+      margin-top: 15px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <div class="box">
-    <h2>💖 Husband Test 💖</h2>
+  <div class="card">
+    <div class="score">Score : 0/4</div>
 
-    <p>1. Who loves you the most?</p>
-    <select id="q1">
-      <option value="">Select</option>
-      <option value="me">You 😌</option>
-      <option value="you">Me ❤️</option>
-    </select>
+    <h3>When did I first fall for you? 💕</h3>
 
-    <p>2. Who is the luckiest person?</p>
-    <select id="q2">
-      <option value="">Select</option>
-      <option value="him">You</option>
-      <option value="me">Me 😎</option>
-    </select>
+    <div class="option" onclick="selectAnswer(this, 'wrong')">Jan 29</div>
+    <div class="option" onclick="selectAnswer(this, 'correct')">Feb 12</div>
+    <div class="option" onclick="selectAnswer(this, 'wrong')">Jan 28</div>
+    <div class="option" onclick="selectAnswer(this, 'wrong')">I don't remember 🫣</div>
 
-    <br><br>
-    <button onclick="checkAnswers()">Submit Test 💌</button>
+    <button onclick="submitAnswer()">Submit</button>
 
-    <h3 id="result"></h3>
+    <p id="result" style="text-align:center; margin-top:15px; font-weight:bold;"></p>
   </div>
 
   <script>
-    function checkAnswers() {
-      const q1 = document.getElementById("q1").value;
-      const q2 = document.getElementById("q2").value;
-      const result = document.getElementById("result");
+    let selected = null;
+    let isCorrect = false;
 
-      if (q1 === "you" && q2 !== "") {
-        result.innerHTML = "🎉 You passed! 🎉<br>I love you more than anything ❤️";
+    function selectAnswer(element, answer) {
+      document.querySelectorAll('.option').forEach(opt =>
+        opt.classList.remove('selected')
+      );
+      element.classList.add('selected');
+      selected = true;
+      isCorrect = (answer === 'correct');
+    }
+
+    function submitAnswer() {
+      const result = document.getElementById("result");
+      if (!selected) {
+        result.innerHTML = "Pick an answer first 😄";
+        return;
+      }
+      if (isCorrect) {
+        result.innerHTML = "💖 Correct! You know me so well 💖";
       } else {
-        result.innerHTML = "😜 Wrong answers… but I still love you ❤️";
+        result.innerHTML = "😜 Wrong… but I still love you ❤️";
       }
     }
   </script>
