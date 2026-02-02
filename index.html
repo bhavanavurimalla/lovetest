@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Just for You ❤️</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff0f5;
+      text-align: center;
+      padding: 30px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #e63950;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>💖 Husband Test 💖</h2>
+
+    <p>1. Who loves you the most?</p>
+    <select id="q1">
+      <option value="">Select</option>
+      <option value="me">You 😌</option>
+      <option value="you">Me ❤️</option>
+    </select>
+
+    <p>2. Who is the luckiest person?</p>
+    <select id="q2">
+      <option value="">Select</option>
+      <option value="him">You</option>
+      <option value="me">Me 😎</option>
+    </select>
+
+    <br><br>
+    <button onclick="checkAnswers()">Submit Test 💌</button>
+
+    <h3 id="result"></h3>
+  </div>
+
+  <script>
+    function checkAnswers() {
+      const q1 = document.getElementById("q1").value;
+      const q2 = document.getElementById("q2").value;
+      const result = document.getElementById("result");
+
+      if (q1 === "you" && q2 !== "") {
+        result.innerHTML = "🎉 You passed! 🎉<br>I love you more than anything ❤️";
+      } else {
+        result.innerHTML = "😜 Wrong answers… but I still love you ❤️";
+      }
+    }
+  </script>
+
+</body>
+</html>
