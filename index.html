@@ -1,104 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Love Test ❤️</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #6a5acd, #836fff);
-      padding: 30px;
-      color: #333;
-    }
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      max-width: 420px;
-      margin: auto;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    }
-    .score {
-      text-align: center;
-      font-weight: bold;
-      color: #6a5acd;
-      margin-bottom: 10px;
-    }
-    h3 {
-      text-align: center;
-    }
-    .option {
-      border: 2px solid #c7c7ff;
-      border-radius: 12px;
-      padding: 12px;
-      margin: 10px 0;
-      cursor: pointer;
-      text-align: center;
-      transition: 0.2s;
-    }
-    .option:hover {
-      background: #f0f0ff;
-    }
-    .option.selected {
-      background: #6a5acd;
-      color: white;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #ff4d6d;
-      border: none;
-      border-radius: 20px;
-      color: white;
-      font-size: 16px;
-      margin-top: 15px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Love Test ❤️</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #6a5acd, #836fff);
+  padding: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  text-align: center;
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.score {
+  font-weight: bold;
+  color: #6a5acd;
+  margin-bottom: 10px;
+}
+
+.option {
+  border: 2px solid #c7c7ff;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 10px 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.option.selected {
+  background: #6a5acd;
+  color: white;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #ff4d6d;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-size: 16px;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #ffc1cc;
+  cursor: not-allowed;
+}
+
+#message {
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+/* Shake */
+.shake {
+  animation: shake 0.4s;
+}
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+/* Floating heart */
+.heart {
+  position: fixed;
+  font-size: 28px;
+  animation: floatUp 1.2s ease-out forwards;
+}
+@keyframes floatUp {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-120px); }
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  .card { padding: 16px; }
+  h2 { font-size: 20px; }
+  .option { font-size: 15px; }
+}
+</style>
 </head>
+
 <body>
 
-  <div class="card">
-    <div class="score">Score : 0/4</div>
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4c8b2b2c2f.mp3" type="audio/mpeg">
+</audio>
 
-    <h3>When did I first fall for you? 💕</h3>
+<div class="card" id="card">
 
-    <div class="option" onclick="selectAnswer(this, 'wrong')">Jan 29</div>
-    <div class="option" onclick="selectAnswer(this, 'correct')">Feb 12</div>
-    <div class="option" onclick="selectAnswer(this, 'wrong')">Jan 28</div>
-    <div class="option" onclick="selectAnswer(this, 'wrong')">I don't remember 🫣</div>
-
-    <button onclick="submitAnswer()">Submit</button>
-
-    <p id="result" style="text-align:center; margin-top:15px; font-weight:bold;"></p>
+  <div id="startScreen">
+    <h2>💖 Welcome My Love 💖</h2>
+    <p>
+      A little quiz made just for you 🥰<br>
+      Answer honestly… your heart is being tested 😘
+    </p>
+    <button onclick="startQuiz()">Start Quiz ❤️</button>
   </div>
 
-  <script>
-    let selected = null;
-    let isCorrect = false;
+  <div id="quizScreen" style="display:none;">
+    <div class="score" id="score"></div>
+    <h3 id="question"></h3>
+    <div id="options"></div>
+    <div id="message"></div>
+    <button id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
+  </div>
 
-    function selectAnswer(element, answer) {
-      document.querySelectorAll('.option').forEach(opt =>
-        opt.classList.remove('selected')
-      );
-      element.classList.add('selected');
-      selected = true;
-      isCorrect = (answer === 'correct');
-    }
+</div>
 
-    function submitAnswer() {
-      const result = document.getElementById("result");
-      if (!selected) {
-        result.innerHTML = "Pick an answer first 😄";
-        return;
-      }
-      if (isCorrect) {
-        result.innerHTML = "💖 Correct! You know me so well 💖";
-      } else {
-        result.innerHTML = "😜 Wrong… but I still love you ❤️";
-      }
+<script>
+let answersLog = [];
+
+const quiz = [
+  {
+    question: "When did we meet for the second time? 💕",
+    options: ["Nov 15", "Nov 17", "Nov 18", "Nov 16"],
+    correct: 1
+  },
+  {
+    question: "When did we kiss for the first time? 💕",
+    options: ["Dec 15", "Dec 14", "Dec 10", "Dec 13", "I don't remember 🫣"],
+    correct: 3
+  },
+  {
+    question: "When did we do it for the first time? 😜",
+    options: ["Dec 15", "Dec 14", "Dec 10", "Dec 13"],
+    correct: 3
+  },
+  {
+    question: "When did I come to the USA? ❤️",
+    options: ["Feb 14", "Feb 17", "Feb 19", "I don't remember 🫣"],
+    correct: 1
+  },
+  {
+    question: "What is my love language? ❤️",
+    options: ["Words of affirmation", "Quality time", "Gifts", "Acts of service", "I don't remember 🫣"],
+    correct: 1
+  },
+  {
+    question: "What was the first gift you gave me? 🎁",
+    options: ["Flowers 🌸", "Chain", "Chocolate 🍫", "Perfume", "I don't remember 🫣"],
+    correct: 1
+  }
+];
+
+let current = 0;
+let score = 0;
+let selected = null;
+
+function startQuiz() {
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("quizScreen").style.display = "block";
+  document.getElementById("bgMusic").play();
+  loadQuestion();
+}
+
+function loadQuestion() {
+  selected = null;
+  document.getElementById("question").innerText = quiz[current].question;
+  document.getElementById("options").innerHTML = "";
+  document.getElementById("message").innerText = "";
+  document.getElementById("nextBtn").disabled = true;
+
+  quiz[current].options.forEach((opt, index) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerText = opt;
+    div.onclick = () => selectOption(div, index);
+    document.getElementById("options").appendChild(div);
+  });
+
+  document.getElementById("score").innerText =
+    `Score : ${score}/${quiz.length}`;
+}
+
+function selectOption(el, index) {
+  document.querySelectorAll(".option").forEach(o =>
+    o.classList.remove("selected")
+  );
+  el.classList.add("selected");
+  selected = index;
+  document.getElementById("nextBtn").disabled = false;
+}
+
+function nextQuestion() {
+  const message = document.getElementById("message");
+  const card = document.getElementById("card");
+
+  if (selected === quiz[current].correct) {
+    score++;
+    message.innerText = "❤️ Correct!";
+    message.style.color = "green";
+    createHeart();
+  } else {
+    message.innerText = "💔 Wrong answer!";
+    message.style.color = "red";
+    card.classList.add("shake");
+    setTimeout(() => card.classList.remove("shake"), 400);
+  }
+
+  setTimeout(() => {
+    answersLog.push(
+      `Q${current + 1}: ${quiz[current].question}\nAnswer: ${quiz[current].options[selected]}`
+    );
+
+    current++;
+    if (current < quiz.length) {
+      loadQuestion();
+    } else {
+      showResult();
     }
-  </script>
+  }, 1200);
+}
+
+
+function showResult() {
+  const email = "bhavana.vurimalla26@gmail.com"; // 🔴 CHANGE THIS
+  const subject = "💖 Love Quiz Answers 💖";
+
+  const body =
+    `Quiz Completed!\n\nScore: ${score}/${quiz.length}\n\n` +
+    answersLog.join("\n\n");
+
+  const mailtoLink =
+    `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  let loveMessage = "";
+
+  if (score === quiz.length) {
+    loveMessage = "💯 Perfect score! You know me so well 🥹💖 My heart feels so loved.";
+  } else if (score >= quiz.length / 2) {
+    loveMessage = "🥰 You did great, my love! And even if some answers slipped, my love for you never will ❤️";
+  } else {
+    loveMessage = "💗 It’s completely okay, my love. Scores don’t matter at all — I love you endlessly, exactly the way you are 🤗❤️";
+  }
+
+  document.getElementById("card").innerHTML = `
+    <h2>🎉 Quiz Completed 🎉</h2>
+
+    <p style="font-size:18px;">
+      You scored <b>${score}/${quiz.length}</b> ❤️
+    </p>
+
+    <p style="margin-top:15px; font-size:17px; color:#6a5acd;">
+      ${loveMessage}
+    </p>
+
+    <p style="margin-top:10px; font-size:16px;">
+      This quiz wasn’t about memory… it was about us 💕<br>
+      And no matter the score, you already have my heart forever 💖
+    </p>
+
+    <button onclick="window.location.href='${mailtoLink}'">
+      Send Answers 📩
+    </button>
+
+    <br><br>
+
+    <button onclick="location.reload()">Restart Quiz 🔁</button>
+  `;
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "❤️";
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.bottom = "20px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 1200);
+}
+</script>
 
 </body>
 </html>
